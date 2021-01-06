@@ -96,10 +96,9 @@ class ItemRepositoryTest < Minitest::Test
 
   def test_it_can_delete
     test = ItemRepository.new(CSV.readlines("./data/items.csv", headers: true, header_converters: :symbol))
-    sample = test.items.first
 
     test.delete(263395237)
 
-    assert_equal false, test.items.first == sample
+    assert_nil test.find_by_id(263395237)
   end
 end
