@@ -134,7 +134,7 @@ class SalesAnalystTest < Minitest::Test
     engine = SalesEngine.from_csv(@csv_data)
     analyst = SalesAnalyst.new(engine)
 
-    assert_equal ["Wednesday"], analyst.top_days_by_invoice_count
+    assert_equal ['Wednesday'], analyst.top_days_by_invoice_count
   end
 
   def test_invoice_status
@@ -151,13 +151,13 @@ class SalesAnalystTest < Minitest::Test
     analyst = SalesAnalyst.new(engine)
 
     days_of_the_week = [
-                        "Saturday",
-                        "Friday",
-                        "Wednesday",
-                        "Monday",
-                        "Sunday",
-                        "Tuesday",
-                        "Thursday"
+                        'Saturday',
+                        'Friday',
+                        'Wednesday',
+                        'Monday',
+                        'Sunday',
+                        'Tuesday',
+                        'Thursday'
                        ]
 
     assert_instance_of Hash, analyst.invoices_per_day
@@ -179,7 +179,6 @@ class SalesAnalystTest < Minitest::Test
   end
 
   def test_invoice_paid_in_full_with_invoice_id_arg
-
     engine = SalesEngine.from_csv(@csv_data)
     analyst = SalesAnalyst.new(engine)
 
