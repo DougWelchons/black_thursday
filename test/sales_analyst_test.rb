@@ -193,6 +193,43 @@ class SalesAnalystTest < Minitest::Test
     assert_nil analyst.invoice_total(100000000000)
     assert_equal 0.528913e4, analyst.invoice_total(2)
     assert_instance_of BigDecimal, analyst.invoice_total(2)
+  end
 
+  def test_item_invoices_by_date
+    engine = SalesEngine.from_csv(@csv_data)
+    analyst = SalesAnalyst.new(engine)
+
+    assert_equal 1, analyst.item_invoices_by_date('2000-12-14').count
+  end
+
+  def test_total_revenue_by_date
+    engine = SalesEngine.from_csv(@csv_data)
+    analyst = SalesAnalyst.new(engine)
+
+    assert_equal 33_439_634.38, analyst.total_revenue_by_date('2012-03-27')
+  end
+
+  def test_it_can_find_total_revenue_by_merchant
+    engine = SalesEngine.from_csv(@csv_data)
+    analyst = SalesAnalyst.new(engine)
+
+    assert_equal 73777.17, analyst.revenue_by_merchant(12334105)
+  end
+
+  def test_top_revenue_earners
+    engine = SalesEngine.from_csv(@csv_data)
+    analyst = SalesAnalyst.new(engine)
+
+    assert_equal 10, analyst.top_revenue_earners(10).count
+    assert_equal 20, analyst.top_revenue_earners.count
+  end
+
+  def test_merchants_with_pending_invoices
+    engine = SalesEngine.from_csv(@csv_data)
+    analyst = SalesAnalyst.new(engine)
+
+
+    assert_instance_of Array, analyst.merchants_with_pending_invoices
+    assert_equal 467, analyst.merchants_with_pending_invoices.count
   end
 end
