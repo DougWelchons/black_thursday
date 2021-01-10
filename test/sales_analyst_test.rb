@@ -199,14 +199,14 @@ class SalesAnalystTest < Minitest::Test
     engine = SalesEngine.from_csv(@csv_data)
     analyst = SalesAnalyst.new(engine)
 
-    assert_equal 1, analyst.item_invoices_by_date('2000-12-14').count
+    assert_equal 1, analyst.invoices_by_date(Time.parse('2009-02-07')).count
   end
 
   def test_total_revenue_by_date
     engine = SalesEngine.from_csv(@csv_data)
     analyst = SalesAnalyst.new(engine)
 
-    assert_equal 33_439_634.38, analyst.total_revenue_by_date('2012-03-27')
+    assert_equal 0.2106777e5, analyst.total_revenue_by_date(Time.parse('2009-02-07'))
   end
 
   def test_it_can_find_total_revenue_by_merchant
@@ -231,5 +231,51 @@ class SalesAnalystTest < Minitest::Test
 
     assert_instance_of Array, analyst.merchants_with_pending_invoices
     assert_equal 467, analyst.merchants_with_pending_invoices.count
+  end
+
+  def test_merchants_with_only_one_item
+    engine = SalesEngine.from_csv(@csv_data)
+    analyst = SalesAnalyst.new(engine)
+
+    assert_equal 243, analyst.merchants_with_only_one_item.count
+  end
+
+  def test_it_can_find_merchants_with_only_one_item_registered_in_month
+    engine = SalesEngine.from_csv(@csv_data)
+    analyst = SalesAnalyst.new(engine)
+
+    assert_equal 19, analyst.merchants_with_only_one_item_registered_in_month("January").count
+  end
+
+  def test_it_can_find_items_sold
+    engine = SalesEngine.from_csv(@csv_data)
+    analyst = SalesAnalyst.new(engine)
+
+    assert_equal 97, analyst.items_sold(263542298)
+  end
+
+  def test_it_can_find_most_sold_item_for_merchant
+    engine = SalesEngine.from_csv(@csv_data)
+    analyst = SalesAnalyst.new(engine)
+
+    expected = [engine.items.find_by_id(263400329)]
+
+    assert_equal expected, analyst.most_sold_item_for_merchant(12334145)
+  end
+
+  def test_it_can_find_item_revenue
+    engine = SalesEngine.from_csv(@csv_data)
+    analyst = SalesAnalyst.new(engine)
+
+    assert_equal 0.5216849e5, analyst.item_revenue(263395237)
+  end
+
+  def test_it_can_find_best_item_for_merchant
+    engine = SalesEngine.from_csv(@csv_data)
+    analyst = SalesAnalyst.new(engine)
+
+    expected = [engine.items.find_by_id(263401045)]
+
+    assert_equal expected, analyst.best_item_for_merchant(12334145)
   end
 end

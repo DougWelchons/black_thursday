@@ -156,10 +156,10 @@ class SalesAnalyst
     end
   end
 
-  def item_invoices_by_date(date)
-    @engine.all_invoice_items.find_all do |invoice|
-      invoice.created_at.strftime('%Y-%m-%d') == date
-    end.uniq
+  def invoices_by_date(date)
+    @engine.all_invoices.find_all do |invoice|
+      Time.parse(invoice.created_at.strftime('%Y-%m-%d')) == date
+    end
   end
 
   def invoice_total(invoice_id)
@@ -174,12 +174,12 @@ class SalesAnalyst
 
   def total_revenue_by_date(date)
     total = 0
-    item_invoices_by_date(date).each do |invoice|
+    invoices_by_date(date).each do |invoice|
       if invoice_paid_in_full?(invoice.id)
         total += invoice_total(invoice.id)
       end
     end
-    total.to_f.round(2)
+    total
   end
 
   def revenue_by_merchant(merchant_id)
@@ -189,7 +189,7 @@ class SalesAnalyst
         total += invoice_total(invoice.id)
       end
     end
-    total.to_f.round(2)
+    total
   end
 
   def top_revenue_earners(x = 20)
@@ -204,6 +204,50 @@ class SalesAnalyst
       @engine.find_all_invoices_by_merchant_id(merchant.id).any? do |invoice|
         invoice_paid_in_full?(invoice.id) == false
       end
+    end
+  end
+
+  def merchants_with_only_one_item
+    @engine.all_merchants.find_all do |merchant|
+      @engine.find_all_items_by_merchant_id(merchant.id).count == 1
+    end
+  end
+
+  def merchants_with_only_one_item_registered_in_month(month_name)
+    merchants_with_only_one_item.find_all do |merchant|
+      Time.parse(merchant.created_at).strftime('%B') == month_name
+    end
+  end
+
+  def items_sold(item_id)
+    @engine.find_all_invoice_items_by_item_id(item_id).map do |invoice_item|
+      invoice_item.quantity
+    end.sum
+  end
+
+  def most_sold_item_for_merchant(merchant_id)
+    items_by_merchant = @engine.find_all_items_by_merchant_id(merchant_id)
+    max_item = items_by_merchant.max_by do |item|
+      items_sold(item.id)
+    end
+    items_by_merchant.find_all do |item|
+      items_sold(item.id) == items_sold(max_item.id)
+    end
+  end
+
+  def item_revenue(item_id)
+    @engine.find_all_invoice_items_by_item_id(item_id).map do |invoice_item|
+      invoice_item.quantity * invoice_item.unit_price
+    end.sum
+  end
+
+  def best_item_for_merchant(merchant_id)
+    items_by_merchant = @engine.find_all_items_by_merchant_id(merchant_id)
+    max_item = items_by_merchant.max_by do |item|
+      item_revenue(item.id)
+    end
+    items_by_merchant.find_all do |item|
+      item_revenue(item.id) == item_revenue(max_item.id)
     end
   end
 end
