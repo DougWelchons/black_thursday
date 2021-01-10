@@ -30,22 +30,22 @@ class CustomerRepository
   end
 
   def find_all_by_first_name(name)
-      @customers.find_all do |customer|
-        customer.first_name.downcase.include?(name.downcase)
-      end
+    @customers.find_all do |customer|
+      customer.first_name.downcase.include?(name.downcase)
     end
+  end
 
   def find_all_by_last_name(name)
-      @customers.find_all do |customer|
-        customer.last_name.downcase.include?(name.downcase)
-      end
+    @customers.find_all do |customer|
+      customer.last_name.downcase.include?(name.downcase)
     end
+  end
 
-    def max_customer_id
-      @customers.max_by do |customer|
-        customer.id
-      end.id
-    end
+  def max_customer_id
+    @customers.max_by do |customer|
+      customer.id
+    end.id
+  end
 
   def create(attributes)
     @customers.push(Customer.new({
