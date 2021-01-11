@@ -231,20 +231,31 @@ class SalesAnalyst
     end.sum
   end
 
-  def helper_method(items_by_merchant, given_items)
+  def max_items_sold(merchant_id)
+    items_by_merchant = @engine.find_all_items_by_merchant_id(merchant_id)
     items_by_merchant.max_by do |item|
-      given_items
+      items_sold(item.id)
     end
   end
 
   def most_sold_item_for_merchant(merchant_id)
     items_by_merchant = @engine.find_all_items_by_merchant_id(merchant_id)
-    helper_method(items_by_merchant, items_sold(item.id))
-    # max_item = items_by_merchant.max_by do |item|
-    #   items_sold(item.id)
-    # end
     items_by_merchant.find_all do |item|
-      items_sold(item.id) == items_sold(helper_method(items_by_merchant).id)
+      items_sold(item.id) == items_sold(max_items_sold(merchant_id).id)
+    end
+  end
+
+  def max_item_revenue(merchant_id)
+    items_by_merchant = @engine.find_all_items_by_merchant_id(merchant_id)
+    items_by_merchant.max_by do |item|
+      item_revenue(item.id)
+    end
+  end
+
+  def best_item_for_merchant(merchant_id)
+    items_by_merchant = @engine.find_all_items_by_merchant_id(merchant_id)
+    items_by_merchant.find_all do |item|
+      item_revenue(item.id) == item_revenue(max_item_revenue(merchant_id).id)
     end
   end
 
@@ -252,15 +263,5 @@ class SalesAnalyst
     @engine.find_all_invoice_items_by_item_id(item_id).map do |invoice_item|
       invoice_item.quantity * invoice_item.unit_price
     end.sum
-  end
-
-  def best_item_for_merchant(merchant_id)
-    items_by_merchant = @engine.find_all_items_by_merchant_id(merchant_id)
-    max_item = items_by_merchant.max_by do |item|
-      item_revenue(item.id)
-    end
-    items_by_merchant.find_all do |item|
-      item_revenue(item.id) == item_revenue(max_item.id)
-    end
   end
 end
