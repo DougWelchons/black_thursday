@@ -41,7 +41,7 @@ class SalesAnalystTest < Minitest::Test
     assert_equal 2.88, analyst.average_items_per_merchant
   end
 
-  def test_we_can_find_average_standard_deviation
+  def test_we_can_find_average_items_per_merchant_standard_deviation
     engine = SalesEngine.from_csv(@csv_data)
     analyst = SalesAnalyst.new(engine)
 
@@ -171,7 +171,7 @@ class SalesAnalystTest < Minitest::Test
     assert_equal 712, analyst.average_invoices_per_day
   end
 
-  def test_it_can_return_standard_deviation
+  def test_it_can_return_average_invoices_per_day_standard_deviation
     engine = SalesEngine.from_csv(@csv_data)
     analyst = SalesAnalyst.new(engine)
 

@@ -33,12 +33,18 @@ class SalesAnalyst
     (prices.sum / prices.count).round(2)
   end
 
-  def average_items_per_merchant_standard_deviation
-    aipm = average_items_per_merchant
-    standard = items_per_merchant.map do |number|
-      (number - aipm) ** 2
+  def standard_deviation(average, count, array)
+    standard = array.map do |number|
+      (number - average) ** 2
     end.sum
-    Math.sqrt(standard / (@count - 1)).round(2)
+    Math.sqrt(standard / (count - 1)).round(2)
+  end
+
+  def average_items_per_merchant_standard_deviation
+    average = average_items_per_merchant
+    @count = count
+    ipm = items_per_merchant
+    standard_deviation(average, count, ipm)
   end
 
   def average_average_price_per_merchant
@@ -58,12 +64,10 @@ class SalesAnalyst
   end
 
   def average_price_standard_deviation
-    ap = average_price
-    standard = @prices.map do |number|
-      (number - ap) ** 2
-    end
-    standard_sum = standard.sum
-    Math.sqrt(standard_sum / (@item_count - 1)).round(2)
+    average = average_price
+    item_count = @item_count
+    prices = @prices
+    standard_deviation(average, item_count, prices)
   end
 
   def golden_items
@@ -87,11 +91,10 @@ class SalesAnalyst
   end
 
   def average_invoices_per_merchant_standard_deviation
-    aipm = average_invoices_per_merchant
-    standard = invoices_per_merchant.map do |number|
-      (number - aipm) ** 2
-    end.sum
-    Math.sqrt(standard / (@count_inv - 1)).round(2)
+    average = average_invoices_per_merchant
+    ipm = invoices_per_merchant
+    count = @count_inv
+    standard_deviation(average, count, ipm)
   end
 
   def top_merchants_by_invoice_count
@@ -124,20 +127,23 @@ class SalesAnalyst
   end
 
   def average_invoices_per_day_standard_deviation
+    average = average_invoices_per_day
+    ipd_count = invoices_per_day.map do |key, value|
+      value.count
+    end
+    standard_deviation(average, 7, ipd_count)
+  end
+
+  def top_days_by_invoice_count_with_invoices
     aipd = average_invoices_per_day
-    standard = invoices_per_day.map do |key, value|
-      (value.count - aipd) ** 2
-    end.sum
-    Math.sqrt(standard / 6).round(2)
+    aipdsd = average_invoices_per_day_standard_deviation
+    invoices_per_day.find_all do |key, value|
+      value.count > (aipd + aipdsd)
+    end
   end
 
   def top_days_by_invoice_count
-    aipd = average_invoices_per_day
-    aipdsd = average_invoices_per_day_standard_deviation
-    array = invoices_per_day.find_all do |key, value|
-      value.count > (aipd + aipdsd)
-    end
-    array.map do |day|
+    top_days_by_invoice_count_with_invoices.map do |day|
       day[0]
     end
   end
@@ -225,13 +231,20 @@ class SalesAnalyst
     end.sum
   end
 
+  def helper_method(items_by_merchant, given_items)
+    items_by_merchant.max_by do |item|
+      given_items
+    end
+  end
+
   def most_sold_item_for_merchant(merchant_id)
     items_by_merchant = @engine.find_all_items_by_merchant_id(merchant_id)
-    max_item = items_by_merchant.max_by do |item|
-      items_sold(item.id)
-    end
+    helper_method(items_by_merchant, items_sold(item.id))
+    # max_item = items_by_merchant.max_by do |item|
+    #   items_sold(item.id)
+    # end
     items_by_merchant.find_all do |item|
-      items_sold(item.id) == items_sold(max_item.id)
+      items_sold(item.id) == items_sold(helper_method(items_by_merchant).id)
     end
   end
 
