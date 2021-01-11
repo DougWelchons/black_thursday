@@ -1,64 +1,69 @@
 # Black Thursday Iteration 4
 ## Iteration 4: Merchant Analytics
+### most_sold_item_for_merchant
+- `sales_analyst.most_sold_item_for_merchant(merchant_id)`
 
-Which item sold most in terms of quantity and revenue:
-
-* most_sold_item_for_merchant
-`sales_analyst.most_sold_item_for_merchant(merchant_id)`
-
-  - helper method `items_sold(item_id)`
+In order to find the most sold item for a given merchant need to evaluate the item invoices for each of the merchants' items to determine the quantity sold. With this information we can easily determine the merchant's most sold item. The steps to achieve that result look like this.
 
   ```ruby
+  def most_sold_item_for_merchant(merchant_id)
+    items_by_merchant = @engine.find_all_items_by_merchant_id(merchant_id)
+    items_by_merchant.find_all do |item|
+      items_sold(item.id) == items_sold(max_items_sold(merchant_id).id)
+    end
+  end
+
   def items_sold(item_id)
     @engine.find_all_invoice_items_by_item_id(item_id).map do |invoice_item|
       invoice_item.quantity
     end.sum
   end
 
-  def most_sold_item_for_merchant(merchant_id)
+  def max_items_sold(merchant_id)
     items_by_merchant = @engine.find_all_items_by_merchant_id(merchant_id)
     max_item = items_by_merchant.max_by do |item|
       items_sold(item.id)
     end
-    items_by_merchant.find_all do |item|
-      items_sold(item.id) == items_sold(max_item.id)
-    end
+  end
+
   ```
-
-  The `most_sold_item_for_merchant` method will look into our `engine` class in order to find all the items under each merchant with the merchant ID as as a parameter. This information will be saved to our `items_by_merchant` variable.
-
-  For the next portion, we will call our helper method `items_sold`. This helper method will reach into the `engine` class to find all the invoice items that match the item ID that is provided. Then, for every matching item ID, it will get the quantity of that invoice item. Finally, it will sum all the quantities from every invoice item.
-
-  Back to our `most_sold_item_for_merchant`, we will look into every item under each merchant to get the number of items that were sold per item ID.
-  Finally, we will look into every item under each merchant, call our `items_sold`, and return the most sold item for the corresponding merchant ID.
-
-  > We have a merchant, find items by merchant. then, with each item, we go thru each item to see which was sold and how many. then find which one sold the most. then we want to say ok, of all items, these are the ones equal to the ones that sold the most.  - Doug W.
+  To find the `most_sold_item_for_merchant`, first we will need to query our `engine` class in order to find all the items for a given merchant. This information will be saved to our `items_by_merchant` variable. Before we can move on, we need to find the number of each item sold. The helper method `items_sold` will provide us with that number and it's specific item ID. The `items_sold` method will then query our engine for all invoice items relates to the given item ID and sum the quantities sold accordingly. However, before we can move on, we will also have to find our item that has sold more than any other. We will need to find which item has sold the most, we can achieve this with our `max_item_sold` helper method, which will evaluate a given set of items (provided by our `most_sold_items_for_merchant` method) and return the item which has been sold the most for our given merchant. Since we can have multiple items that could have potentially sold the most, we will then need to find all of the items for our given merchant that have that sold an equal amount to our  `max_item_sold`. This is achieved through iterating over all of the items by a given merchant again, and finding all of the items sold that are equal to our maximum items sold in terms of quantity.
 
 
-* best_item_for_merchant
-`sales_analyst.best_item_for_merchant(merchant_id)`
+  - Helper methods
+   1. `items_sold(item_id)`
+   2. `max_items_sold(merchant_id)`
 
-  - helper method `items_revenue(item_id)`
+### best_item_for_merchant
+  - `sales_analyst.best_item_for_merchant(merchant_id)`
+
+In order to find the best item for a given merchant, we will be following mostly the same steps as in our previous method, however for this one we will be focusing on the item's revenue for the given merchant, as opposed to just the quantity it sold.
 
   ```ruby
-    def item_revenue(item_id)
-      @engine.find_all_invoice_items_by_item_id(item_id).map do |invoice_item|
-        invoice_item.quantity * invoice_item.unit_price
-      end.sum
+  def best_item_for_merchant(merchant_id)
+    items_by_merchant = @engine.find_all_items_by_merchant_id(merchant_id)
+    items_by_merchant.find_all do |item|
+      item_revenue(item.id) == item_revenue(max_item_revenue(merchant_id).id)
     end
+  end
 
-    def best_item_for_merchant(merchant_id)
-      items_by_merchant = @engine.find_all_items_by_merchant_id(merchant_id)
-      max_item = items_by_merchant.max_by do |item|
-        item_revenue(item.id)
-      end
-      items_by_merchant.find_all do |item|
-        item_revenue(item.id) == item_revenue(max_item.id)
-      end
+  def item_revenue(item_id)
+    @engine.find_all_invoice_items_by_item_id(item_id).map do |invoice_item|
+      invoice_item.quantity * invoice_item.unit_price
+    end.sum
+  end
+
+  def max_item_revenue(merchant_id)
+    items_by_merchant = @engine.find_all_items_by_merchant_id(merchant_id)
+    max_item = items_by_merchant.max_by do |item|
+      item_revenue(item.id)
     end
+  end
+
   ```
-The `best_item_for_merchant(merchant_id)` method will once again create the variable `items_by_merchant` by talking to our `engine` class to find all the items under each merchant_id
 
-Then, we will call on our helper method `item_revenue`. This method will find the total sum of the invoice items' revenue by talking to our `engine` class and finding all the invoice items that match the provided item ID. It will use the invoice items' quantity and multiply it by the unit_price of the invoice item.
+  - Helper methods
+   1. `items_sold(item_id)`
+   2. `max_items_sold(merchant_id)`
 
-The `best_item_for_merchant(merchant_id)` will continue with the information above. It will look for every item under every merchant to get the revenue matching the item's ID. Lastly, we use the information stored in the `items_by_merchant` variable to find all the items' revenue that match the best item for each merchant ID.
+To find the `best_item_for_merchant`, first we need to once again query our `engine` class in order to find all the items for a given merchant. As before, this information will be saved to our `items_by_merchant` variable. Before we can continue with this method, we need to find total revenue from each item sold. The helper method, `item_revenue`, will provide us with a sum of each item's revenue. The helper method will iterate over all of our invoice items to find the item's `quantity` and `unit_price`. Then, it will multiply both numbers to calculate the revenue. Next we will need to find which item has produced the most revenue, which can be achieved by using our second helper method, `max_item_revenue`. This second helper method iterates over all of the items for a given merchant, and finds the maximum revenue produced by an item belonging to the merchant we are searching. Last, we hen head back to our `best_item_for_merchant` method and once again iterate over all of the items for our given merchant and find all of the items whose revenue are equal to the maximum item revenue calculated in `max_item_revenue`. This will then return us an array of the one or many items that have earned the most revenue for a given merchant.
