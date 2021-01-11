@@ -247,11 +247,27 @@ class SalesAnalystTest < Minitest::Test
     assert_equal 19, analyst.merchants_with_only_one_item_registered_in_month("January").count
   end
 
+  def test_max_items_sold
+    engine = SalesEngine.from_csv(@csv_data)
+    analyst = SalesAnalyst.new(engine)
+    expected = engine.items.find_by_id(263400329)
+
+    assert_equal expected, analyst.max_items_sold(12334145)
+  end
+
   def test_it_can_find_items_sold
     engine = SalesEngine.from_csv(@csv_data)
     analyst = SalesAnalyst.new(engine)
 
     assert_equal 97, analyst.items_sold(263542298)
+  end
+
+  def test_max_item_revenue
+    engine = SalesEngine.from_csv(@csv_data)
+    analyst = SalesAnalyst.new(engine)
+    expected = engine.items.find_by_id(263401045)
+
+    assert_equal expected, analyst.max_item_revenue(12334145)
   end
 
   def test_it_can_find_most_sold_item_for_merchant

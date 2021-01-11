@@ -42,7 +42,7 @@ class SalesAnalyst
 
   def average_items_per_merchant_standard_deviation
     average = average_items_per_merchant
-    @count = count
+    count = @count
     ipm = items_per_merchant
     standard_deviation(average, count, ipm)
   end
