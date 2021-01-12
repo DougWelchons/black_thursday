@@ -38,7 +38,7 @@ class CustomerRepositoryTest < Minitest::Test
   def test_max_customer_id
     customer_repo = CustomerRepository.new(@sample_data, 'engine')
 
-    assert_equal 6, customer_repo.max_customer_id
+    assert_equal 6, customer_repo.max_by_id
   end
 
   def test_it_can_create
@@ -79,6 +79,7 @@ class CustomerRepositoryTest < Minitest::Test
 
     assert_nil customer_repo.find_by_id(1)
   end
+
   def test_it_can_inspect
     test = CustomerRepository.new(@sample_data, 'engine')
     assert_equal "#<CustomerRepository 6 rows>", test.inspect

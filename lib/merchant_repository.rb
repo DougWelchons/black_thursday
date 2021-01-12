@@ -1,12 +1,14 @@
 require 'time'
 require_relative 'merchant'
+require_relative 'repository'
 
-class MerchantRepository
+class MerchantRepository < Repository
   attr_reader :merchants
 
   def initialize(file_path, engine)
     @engine = engine
     @merchants = create_repository(file_path)
+    @repo = @merchants
   end
 
   def create_repository(file_path)
@@ -16,19 +18,19 @@ class MerchantRepository
     end
   end
 
-  def inspect
-    "#<#{self.class} #{@merchants.size} rows>"
-  end
-
-  def all
-    @merchants
-  end
-
-  def find_by_id(id)
-    @merchants.find do |merchant|
-      merchant.id.to_i == id
-    end
-  end
+  # def inspect
+  #   "#<#{self.class} #{@merchants.size} rows>"
+  # end
+  #
+  # def all
+  #   @merchants
+  # end
+  #
+  # def find_by_id(id)
+  #   @merchants.find do |merchant|
+  #     merchant.id.to_i == id
+  #   end
+  # end
 
   def find_by_name(name)
     @merchants.find do |merchant|
@@ -42,7 +44,7 @@ class MerchantRepository
     end
   end
 
-  def max_merchant_id
+  def max_by_id
     @merchants.max_by do |merchant|
       merchant.id
     end.id
@@ -50,7 +52,7 @@ class MerchantRepository
 
   def create(attributes) #needs test
     @merchants.push(Merchant.new({
-                                  id: max_merchant_id + 1,
+                                  id: max_by_id + 1,
                                   name: attributes[:name],
                                   created_at: Time.now, #lookinto sriptime
                                   updated_at: Time.now
@@ -63,7 +65,7 @@ class MerchantRepository
     find_by_id(id).updated_at = Time.now.round
   end
 
-  def delete(id)
-    @merchants.delete(find_by_id(id))
-  end
+  # def delete(id)
+  #   @merchants.delete(find_by_id(id))
+  # end
 end

@@ -1,31 +1,19 @@
 require_relative 'invoice_item'
+require_relative 'repository'
 
-class InvoiceItemRepository
+class InvoiceItemRepository < Repository
   attr_reader :invoice_items
 
   def initialize(file_path, engine)
     @invoice_items = create_repository(file_path)
     @engine = engine
+    @repo = @invoice_items
   end
 
   def create_repository(file_path)
     file = CSV.readlines(file_path, headers: true, header_converters: :symbol)
     file.map do |row|
       InvoiceItem.new(row)
-    end
-  end
-
-  def inspect
-    "#<#{self.class} #{@invoice_items.size} rows>"
-  end
-
-  def all
-    @invoice_items
-  end
-
-  def find_by_id(id)
-    @invoice_items.find do |ii|
-      ii.id.to_i == id
     end
   end
 
@@ -41,7 +29,7 @@ class InvoiceItemRepository
     end
   end
 
-  def max_invoice_item_id
+  def max_by_id
     @invoice_items.max_by do |ii|
       ii.id
     end.id
@@ -49,7 +37,7 @@ class InvoiceItemRepository
 
   def create(attributes)
     @invoice_items.push(InvoiceItem.new({
-                                          id:         max_invoice_item_id + 1,
+                                          id:         max_by_id + 1,
                                           item_id:    attributes[:item_id],
                                           invoice_id: attributes[:invoice_id],
                                           quantity:   attributes[:quantity],
@@ -72,7 +60,4 @@ class InvoiceItemRepository
       invoice_item.updated_at = Time.now
   end
 
-  def delete(id)
-    @invoice_items.delete(find_by_id(id))
-  end
 end

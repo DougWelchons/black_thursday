@@ -1,31 +1,19 @@
 require_relative 'transaction'
+require_relative 'repository'
 
-class TransactionRepository
+class TransactionRepository < Repository
   attr_reader :transactions
 
   def initialize(file_path, engine)
     @engine = engine
     @transactions = create_repository(file_path)
+    @repo = @transactions
   end
 
   def create_repository(file_path)
     file = CSV.readlines(file_path, headers: true, header_converters: :symbol)
     file.map do |row|
       Transaction.new(row)
-    end
-  end
-
-  def inspect
-    "#<#{self.class} #{@transactions.size} rows>"
-  end
-
-  def all
-    @transactions
-  end
-
-  def find_by_id(id)
-    @transactions.find do |transaction|
-      transaction.id.to_i == id
     end
   end
 
@@ -47,7 +35,7 @@ class TransactionRepository
     end
   end
 
-  def max_transaction_id
+  def max_by_id
     @transactions.max_by do |transaction|
       transaction.id
     end.id
@@ -55,7 +43,7 @@ class TransactionRepository
 
   def create(attributes)
     @transactions.push(Transaction.new({
-                          id: (max_transaction_id + 1),
+                          id: (max_by_id + 1),
                           invoice_id: attributes[:invoice_id],
                           credit_card_number: attributes[:credit_card_number],
                           credit_card_expiration_date: attributes[:credit_card_expiration_date],
@@ -78,10 +66,6 @@ class TransactionRepository
       end
     end
     transaction.updated_at = Time.now
-  end
-
-  def delete(id)
-    @transactions.delete(find_by_id(id))
   end
 
 end

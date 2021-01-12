@@ -88,7 +88,7 @@ class ItemRepositoryTest < Minitest::Test
   def test_max_item_id
     test = ItemRepository.new(@sample_data, 'engine')
 
-    assert_equal 4, test.max_item_id
+    assert_equal 4, test.max_by_id
   end
 
   def test_it_can_create

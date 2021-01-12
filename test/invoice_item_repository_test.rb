@@ -67,7 +67,7 @@ class InvoiceItemRepositoryTest < Minitest::Test
   def test_max_invoice_item_id
     invoice_item_repo = InvoiceItemRepository.new(@sample_data, 'engine')
 
-    assert_equal 10, invoice_item_repo.max_invoice_item_id
+    assert_equal 10, invoice_item_repo.max_by_id
   end
 
   def test_update_with_id_and_attrs_arg

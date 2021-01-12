@@ -1,31 +1,19 @@
 require_relative 'invoice.rb'
+require_relative 'repository'
 
-class InvoiceRepository
+class InvoiceRepository < Repository
   attr_reader :invoices
 
   def initialize(file_path, engine)
     @invoices = create_repository(file_path)
     @engine = engine
+    @repo = @invoices
   end
 
   def create_repository(file_path)
     file = CSV.readlines(file_path, headers: true, header_converters: :symbol)
     file.map do |row|
       Invoice.new(row)
-    end
-  end
-
-  def inspect
-    "#<#{self.class} #{invoices.size} rows>"
-  end
-
-  def all
-    @invoices
-  end
-
-  def find_by_id(id)
-    @invoices.find do |invoice|
-      invoice.id.to_i == id
     end
   end
 
@@ -47,7 +35,7 @@ class InvoiceRepository
     end
   end
 
-  def max_invoice_id
+  def max_by_id
     @invoices.max_by do |invoice|
       invoice.id
     end.id
@@ -55,7 +43,7 @@ class InvoiceRepository
 
   def create(attributes)
     @invoices.push(Invoice.new({
-                                  id: max_invoice_id + 1,
+                                  id: max_by_id + 1,
                                   customer_id: attributes[:customer_id],
                                   merchant_id: attributes[:merchant_id],
                                   status: attributes[:status],
@@ -69,10 +57,6 @@ class InvoiceRepository
     return nil if invoice.nil?
     invoice.status = attributes[:status]
     invoice.updated_at = Time.now
-  end
-
-  def delete(id)
-    @invoices.delete(find_by_id(id))
   end
 
 end
