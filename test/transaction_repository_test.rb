@@ -59,7 +59,7 @@ class TransactionRepositoryTest < Minitest::Test
   def test_it_can_find_max_transaction_id
     test = TransactionRepository.new(@sample_data, 'engine')
 
-    assert_equal 10, test.max_transaction_id
+    assert_equal 10, test.max_by_id
   end
 
   def test_it_can_create

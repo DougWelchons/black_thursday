@@ -1,31 +1,19 @@
 require_relative 'customer'
+require_relative 'repository'
 
-class CustomerRepository
+class CustomerRepository < Repository
   attr_reader :customers
 
   def initialize(file_path, engine)
     @engine = engine
     @customers = create_repository(file_path)
+    @repo = @customers
   end
 
   def create_repository(file_path)
     file = CSV.readlines(file_path, headers: true, header_converters: :symbol)
     file.map do |row|
       Customer.new(row)
-    end
-  end
-
-  def inspect
-    "#<#{self.class} #{@customers.size} rows>"
-  end
-
-  def all
-    @customers
-  end
-
-  def find_by_id(id)
-    @customers.find do |customer|
-      customer.id.to_i == id
     end
   end
 
@@ -41,15 +29,9 @@ class CustomerRepository
     end
   end
 
-  def max_customer_id
-    @customers.max_by do |customer|
-      customer.id
-    end.id
-  end
-
   def create(attributes)
     @customers.push(Customer.new({
-                                    :id         => max_customer_id + 1,
+                                    :id         => max_by_id + 1,
                                     :first_name => attributes[:first_name],
                                     :last_name  => attributes[:last_name],
                                     :created_at => Time.now,
@@ -68,9 +50,5 @@ class CustomerRepository
       end
     end
     customer.updated_at = Time.now
-  end
-
-  def delete(id)
-    @customers.delete(find_by_id(id))
   end
 end

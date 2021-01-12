@@ -1,37 +1,19 @@
 require_relative 'item'
+require_relative 'repository'
 
-class ItemRepository
+class ItemRepository < Repository
   attr_reader :items
 
   def initialize(file_path, engine)
     @engine = engine
     @items = create_repository(file_path)
+    @repo = @items
   end
 
   def create_repository(file_path)
     file = CSV.readlines(file_path, headers: true, header_converters: :symbol)
     file.map do |row|
       Item.new(row)
-    end
-  end
-
-  def inspect
-    "#<#{self.class} #{@items.size} rows>"
-  end
-
-  def all
-    @items
-  end
-
-  def find_by_id(id)
-    @items.find do |item|
-      item.id.to_i == id
-    end
-  end
-
-  def find_by_name(name)
-    @items.find do |item|
-      item.name == name
     end
   end
 
@@ -53,21 +35,9 @@ class ItemRepository
     end
   end
 
-  def find_all_by_merchant_id(merchant_id)
-    @items.find_all do |item|
-      item.merchant_id.to_i == merchant_id
-    end
-  end
-
-  def max_item_id
-    @items.max_by do |item|
-      item.id
-    end.id
-  end
-
   def create(attributes)
     @items.push(Item.new({
-                          id: (max_item_id + 1),
+                          id: (max_by_id + 1),
                           name: attributes[:name],
                           description: attributes[:description],
                           unit_price: attributes[:unit_price],
@@ -90,9 +60,5 @@ class ItemRepository
       end
     end
     item.updated_at = Time.now
-  end
-
-  def delete(id)
-    @items.delete(find_by_id(id))
   end
 end

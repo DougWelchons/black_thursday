@@ -54,8 +54,8 @@ class MerchantRepositoryTest < Minitest::Test
   def test_max_merchant_id
     mr = MerchantRepository.new(@sample_data, 'engine')
 
-    assert_equal 4, mr.max_merchant_id
-    assert_equal mr.merchants[3], mr.find_by_id(mr.max_merchant_id)
+    assert_equal 4, mr.max_by_id
+    assert_equal mr.merchants[3], mr.find_by_id(mr.max_by_id)
   end
 
   def test_create_new_merchant

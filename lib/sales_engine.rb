@@ -60,5 +60,5 @@ class SalesEngine
 
   def find_all_invoice_items_by_item_id(item_id)
     @invoice_items.find_all_by_item_id(item_id)
-  end 
+  end
 end

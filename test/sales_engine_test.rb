@@ -61,6 +61,12 @@ class SalesEngineTest < Minitest::Test
     assert_equal 4985, sales_engine.all_invoices.count
   end
 
+  def test_it_can_find_all_invoice_items
+    sales_engine = SalesEngine.from_csv(@csv_data)
+
+    assert_equal 21830, sales_engine.all_invoice_items.count
+  end
+
   def test_it_can_find_all_invoices_by_merchant_id
     sales_engine = SalesEngine.from_csv(@csv_data)
 

@@ -1,11 +1,13 @@
 require_relative 'invoice_item'
+require_relative 'repository'
 
-class InvoiceItemRepository
+class InvoiceItemRepository < Repository
   attr_reader :invoice_items
 
   def initialize(file_path, engine)
     @invoice_items = create_repository(file_path)
     @engine = engine
+    @repo = @invoice_items
   end
 
   def create_repository(file_path)
@@ -15,41 +17,15 @@ class InvoiceItemRepository
     end
   end
 
-  def inspect
-    "#<#{self.class} #{@invoice_items.size} rows>"
-  end
-
-  def all
-    @invoice_items
-  end
-
-  def find_by_id(id)
-    @invoice_items.find do |ii|
-      ii.id.to_i == id
-    end
-  end
-
   def find_all_by_item_id(item_id)
     @invoice_items.find_all do |ii|
       ii.item_id.to_i == item_id
     end
   end
 
-  def find_all_by_invoice_id(invoice_id)
-    @invoice_items.find_all do |ii|
-      ii.invoice_id.to_i == invoice_id
-    end
-  end
-
-  def max_invoice_item_id
-    @invoice_items.max_by do |ii|
-      ii.id
-    end.id
-  end
-
   def create(attributes)
     @invoice_items.push(InvoiceItem.new({
-                                          id:         max_invoice_item_id + 1,
+                                          id:         max_by_id + 1,
                                           item_id:    attributes[:item_id],
                                           invoice_id: attributes[:invoice_id],
                                           quantity:   attributes[:quantity],
@@ -70,9 +46,5 @@ class InvoiceItemRepository
       end
     end
       invoice_item.updated_at = Time.now
-  end
-
-  def delete(id)
-    @invoice_items.delete(find_by_id(id))
   end
 end

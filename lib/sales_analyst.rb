@@ -1,14 +1,11 @@
 class SalesAnalyst
   include Math
-
   def initialize(engine)
     @engine = engine
   end
 
   def items_per_merchant
-    @count = 0
     @engine.all_merchants.map do |merchant|
-      @count += 1
       @engine.find_all_items_by_merchant_id(merchant.id).count
     end
   end
@@ -42,7 +39,7 @@ class SalesAnalyst
 
   def average_items_per_merchant_standard_deviation
     average = average_items_per_merchant
-    count = @count
+    count = @engine.all_merchants.count
     ipm = items_per_merchant
     standard_deviation(average, count, ipm)
   end
@@ -54,20 +51,21 @@ class SalesAnalyst
     (avg.sum / avg.count).round(2)
   end
 
-  def average_price
-    @item_count = 0
-    @prices = @engine.all_items.map do |item|
-      @item_count += 1
+  def prices
+    @engine.all_items.map do |item|
       item.unit_price
     end
-    (@prices.sum / @prices.count).round(2)
+  end
+
+  def average_price
+    (prices.sum / prices.count).round(2)
   end
 
   def average_price_standard_deviation
     average = average_price
-    item_count = @item_count
-    prices = @prices
-    standard_deviation(average, item_count, prices)
+    item_count = @engine.all_items.count
+    price = prices
+    standard_deviation(average, item_count, price)
   end
 
   def golden_items
@@ -79,9 +77,7 @@ class SalesAnalyst
   end
 
   def invoices_per_merchant
-    @count_inv = 0
     @engine.all_merchants.map do |merchant|
-      @count_inv += 1
       @engine.find_all_invoices_by_merchant_id(merchant.id).count
     end
   end
@@ -93,7 +89,7 @@ class SalesAnalyst
   def average_invoices_per_merchant_standard_deviation
     average = average_invoices_per_merchant
     ipm = invoices_per_merchant
-    count = @count_inv
+    count = @engine.all_merchants.count
     standard_deviation(average, count, ipm)
   end
 
