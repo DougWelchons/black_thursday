@@ -41,7 +41,7 @@ class SalesAnalystTest < Minitest::Test
     assert_equal 2.88, analyst.average_items_per_merchant
   end
 
-  def test_we_can_find_average_standard_deviation
+  def test_we_can_find_average_items_per_merchant_standard_deviation
     engine = SalesEngine.from_csv(@csv_data)
     analyst = SalesAnalyst.new(engine)
 
@@ -171,7 +171,7 @@ class SalesAnalystTest < Minitest::Test
     assert_equal 712, analyst.average_invoices_per_day
   end
 
-  def test_it_can_return_standard_deviation
+  def test_it_can_return_average_invoices_per_day_standard_deviation
     engine = SalesEngine.from_csv(@csv_data)
     analyst = SalesAnalyst.new(engine)
 
@@ -247,11 +247,27 @@ class SalesAnalystTest < Minitest::Test
     assert_equal 19, analyst.merchants_with_only_one_item_registered_in_month("January").count
   end
 
+  def test_max_items_sold
+    engine = SalesEngine.from_csv(@csv_data)
+    analyst = SalesAnalyst.new(engine)
+    expected = engine.items.find_by_id(263400329)
+
+    assert_equal expected, analyst.max_items_sold(12334145)
+  end
+
   def test_it_can_find_items_sold
     engine = SalesEngine.from_csv(@csv_data)
     analyst = SalesAnalyst.new(engine)
 
     assert_equal 97, analyst.items_sold(263542298)
+  end
+
+  def test_max_item_revenue
+    engine = SalesEngine.from_csv(@csv_data)
+    analyst = SalesAnalyst.new(engine)
+    expected = engine.items.find_by_id(263401045)
+
+    assert_equal expected, analyst.max_item_revenue(12334145)
   end
 
   def test_it_can_find_most_sold_item_for_merchant
