@@ -17,12 +17,6 @@ class ItemRepository < Repository
     end
   end
 
-  def find_by_name(name)
-    @items.find do |item|
-      item.name == name
-    end
-  end
-
   def find_all_with_description(description)
     @items.find_all do |item|
       item.description.downcase.include?(description.downcase)
@@ -39,18 +33,6 @@ class ItemRepository < Repository
     @items.find_all do |item|
       range.include?(item.unit_price)
     end
-  end
-
-  def find_all_by_merchant_id(merchant_id)
-    @items.find_all do |item|
-      item.merchant_id.to_i == merchant_id
-    end
-  end
-
-  def max_by_id
-    @items.max_by do |item|
-      item.id
-    end.id
   end
 
   def create(attributes)
@@ -79,5 +61,4 @@ class ItemRepository < Repository
     end
     item.updated_at = Time.now
   end
-
 end

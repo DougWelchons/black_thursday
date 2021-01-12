@@ -23,22 +23,10 @@ class InvoiceRepository < Repository
     end
   end
 
-  def find_all_by_merchant_id(merchant_id)
-    @invoices.find_all do |invoice|
-      invoice.merchant_id.to_i == merchant_id
-    end
-  end
-
   def find_all_by_status(status)
     @invoices.find_all do |invoice|
       invoice.status == status
     end
-  end
-
-  def max_by_id
-    @invoices.max_by do |invoice|
-      invoice.id
-    end.id
   end
 
   def create(attributes)
@@ -58,5 +46,4 @@ class InvoiceRepository < Repository
     invoice.status = attributes[:status]
     invoice.updated_at = Time.now
   end
-
 end

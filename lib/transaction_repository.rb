@@ -17,12 +17,6 @@ class TransactionRepository < Repository
     end
   end
 
-  def find_all_by_invoice_id(id)
-    @transactions.find_all do |transaction|
-      transaction.invoice_id == id
-    end
-  end
-
   def find_all_by_credit_card_number(credit_card_number)
     @transactions.find_all do |transaction|
       transaction.credit_card_number == credit_card_number.to_s
@@ -33,12 +27,6 @@ class TransactionRepository < Repository
     @transactions.find_all do |transaction|
       transaction.result == result
     end
-  end
-
-  def max_by_id
-    @transactions.max_by do |transaction|
-      transaction.id
-    end.id
   end
 
   def create(attributes)
@@ -67,5 +55,4 @@ class TransactionRepository < Repository
     end
     transaction.updated_at = Time.now
   end
-
 end

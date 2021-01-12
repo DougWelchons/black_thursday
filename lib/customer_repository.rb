@@ -51,5 +51,4 @@ class CustomerRepository < Repository
     end
     customer.updated_at = Time.now
   end
-
 end

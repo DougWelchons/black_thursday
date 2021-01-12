@@ -23,18 +23,6 @@ class InvoiceItemRepository < Repository
     end
   end
 
-  def find_all_by_invoice_id(invoice_id)
-    @invoice_items.find_all do |ii|
-      ii.invoice_id.to_i == invoice_id
-    end
-  end
-
-  def max_by_id
-    @invoice_items.max_by do |ii|
-      ii.id
-    end.id
-  end
-
   def create(attributes)
     @invoice_items.push(InvoiceItem.new({
                                           id:         max_by_id + 1,
@@ -59,5 +47,4 @@ class InvoiceItemRepository < Repository
     end
       invoice_item.updated_at = Time.now
   end
-
 end
