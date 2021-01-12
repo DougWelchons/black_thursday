@@ -8,7 +8,4 @@ class RepositoryTest < Minitest::Test
 
     assert_instance_of Repository, repo
   end
-
-
-
 end
