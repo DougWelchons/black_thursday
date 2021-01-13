@@ -260,4 +260,32 @@ class SalesAnalyst
       invoice_item.quantity * invoice_item.unit_price
     end.sum
   end
+
+  def invoice_item_revenue(invoice)
+    @engine.find_all_invoice_items_by_invoice_id(invoice.id).map do |invoice_item|
+      invoice_item.quantity * invoice_item.unit_price
+    end.sum
+  end
+
+  def invoice_item_revenue_for_customer(customer)
+    @engine.find_all_invoices_by_customer_id(customer.id).map do |invoice|
+      invoice_item_revenue(invoice)
+    end.sum
+  end
+
+  def top_buyers(x = 20)
+    sorted_customers = @engine.all_customers.sort_by do |customer|
+      invoice_item_revenue_for_customer(customer)
+    end.reverse
+    sorted_customers[0..(x - 1)]
+  end
+
+  def top_merchant_for_customer(customer_id)
+    hash = @engine.find_all_invoices_by_customer_id(customer_id).group_by do |invoice|
+      invoice.merchant_id
+    end
+
+
+
+  end
 end

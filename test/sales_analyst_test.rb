@@ -294,4 +294,41 @@ class SalesAnalystTest < Minitest::Test
 
     assert_equal expected, analyst.best_item_for_merchant(12334145)
   end
+
+  def test_invoice_item_revenue
+    engine = SalesEngine.from_csv(@csv_data)
+    analyst = SalesAnalyst.new(engine)
+
+    assert_equal 0.1315873e5, analyst.invoice_item_revenue(engine.invoice_items.find_by_id(10))
+  end
+
+  def test_invoice_item_revenue_for_customer
+    engine = SalesEngine.from_csv(@csv_data)
+    analyst = SalesAnalyst.new(engine)
+
+    assert_equal 0.1754386e5, analyst.invoice_item_revenue_for_customer(engine.customers.find_by_id(15))
+  end
+
+  def test_customer_top_buyers
+    engine = SalesEngine.from_csv(@csv_data)
+    # analyst = SalesAnalyst.new(engine)
+
+    expected = [
+                engine.customers.find_by_id(595),
+                engine.customers.find_by_id(370)
+                ]
+
+    assert_equal 2, analyst.top_buyers(2).count
+    assert_equal expected, analyst.top_buyers(2)
+    assert_equal 20, analyst.top_buyers.count
+  end
+
+  def test_top_merchant_for_customer
+    engine = SalesEngine.from_csv(@csv_data)
+    analyst = SalesAnalyst.new(engine)
+
+    # require "pry"; binding.pry
+
+    assert_equal 0, analyst.top_merchant_for_customer(1)
+  end
 end
