@@ -6,8 +6,8 @@ class InvoiceRepository < Repository
 
   def initialize(file_path, engine)
     @invoices = create_repository(file_path)
-    @engine = engine
-    @repo = @invoices
+    @engine   = engine
+    @repo     = @invoices
   end
 
   def create_repository(file_path)

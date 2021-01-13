@@ -1,5 +1,6 @@
 class SalesAnalyst
   include Math
+
   def initialize(engine)
     @engine = engine
   end

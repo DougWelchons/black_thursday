@@ -5,9 +5,9 @@ class CustomerRepository < Repository
   attr_reader :customers
 
   def initialize(file_path, engine)
-    @engine = engine
+    @engine    = engine
     @customers = create_repository(file_path)
-    @repo = @customers
+    @repo      = @customers
   end
 
   def create_repository(file_path)
@@ -39,9 +39,7 @@ class CustomerRepository < Repository
                                   }))
   end
 
-  def update(id, attributes)
-    customer = find_by_id(id)
-    return nil if customer.nil?
+  def update_given_attributes(customer, attributes)
     attributes.each do |key, value|
       if value == attributes[:first_name]
         customer.first_name = attributes[key]
@@ -49,6 +47,12 @@ class CustomerRepository < Repository
         customer.last_name = attributes[key]
       end
     end
+  end
+
+  def update(id, attributes)
+    customer = find_by_id(id)
+    return nil if customer.nil?
+    update_given_attributes(customer, attributes)
     customer.updated_at = Time.now
   end
 end

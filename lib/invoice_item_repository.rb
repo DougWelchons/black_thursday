@@ -6,8 +6,8 @@ class InvoiceItemRepository < Repository
 
   def initialize(file_path, engine)
     @invoice_items = create_repository(file_path)
-    @engine = engine
-    @repo = @invoice_items
+    @engine        = engine
+    @repo          = @invoice_items
   end
 
   def create_repository(file_path)
@@ -18,8 +18,8 @@ class InvoiceItemRepository < Repository
   end
 
   def find_all_by_item_id(item_id)
-    @invoice_items.find_all do |ii|
-      ii.item_id.to_i == item_id
+    @invoice_items.find_all do |invoice_item|
+      invoice_item.item_id.to_i == item_id
     end
   end
 
@@ -35,9 +35,7 @@ class InvoiceItemRepository < Repository
                                         }))
   end
 
-  def update(id, attributes)
-    invoice_item = find_by_id(id)
-    return nil if invoice_item.nil?
+  def update_given_attributes(invoice_item, attributes)
     attributes.each do |key, value|
       if value == attributes[:quantity]
         invoice_item.quantity = attributes[key]
@@ -45,6 +43,12 @@ class InvoiceItemRepository < Repository
         invoice_item.unit_price = attributes[key]
       end
     end
-      invoice_item.updated_at = Time.now
+  end
+
+  def update(id, attributes)
+    invoice_item = find_by_id(id)
+    return nil if invoice_item.nil?
+    update_given_attributes(invoice_item, attributes)
+    invoice_item.updated_at = Time.now
   end
 end

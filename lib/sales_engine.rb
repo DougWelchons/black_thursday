@@ -7,7 +7,6 @@ require_relative 'transaction_repository'
 require_relative 'invoice_item_repository'
 require_relative 'customer_repository'
 
-
 class SalesEngine
   attr_reader :items,
               :merchants,
@@ -22,13 +21,13 @@ class SalesEngine
   end
 
   def initialize(arg1)
-    @items = ItemRepository.new(arg1[:items], self)
-    @merchants = MerchantRepository.new(arg1[:merchants], self)
-    @analyst = SalesAnalyst.new(self)
-    @invoices = InvoiceRepository.new(arg1[:invoices], self)
+    @items         = ItemRepository.new(arg1[:items], self)
+    @merchants     = MerchantRepository.new(arg1[:merchants], self)
+    @analyst       = SalesAnalyst.new(self)
+    @invoices      = InvoiceRepository.new(arg1[:invoices], self)
     @invoice_items = InvoiceItemRepository.new(arg1[:invoice_items], self)
-    @transactions = TransactionRepository.new(arg1[:transactions], self)
-    @customers = CustomerRepository.new(arg1[:customers], self)
+    @transactions  = TransactionRepository.new(arg1[:transactions], self)
+    @customers     = CustomerRepository.new(arg1[:customers], self)
   end
 
   def all_merchants
