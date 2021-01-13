@@ -9,10 +9,15 @@ require_relative 'customer_repository'
 
 
 class SalesEngine
-  attr_reader :items, :merchants, :analyst, :invoices, :invoice_items, :transactions, :customers
+  attr_reader :items,
+              :merchants,
+              :analyst,
+              :invoices,
+              :invoice_items,
+              :transactions,
+              :customers
 
   def self.from_csv(arg1)
-
     new(arg1)
   end
 

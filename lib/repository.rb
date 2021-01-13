@@ -40,5 +40,4 @@ class Repository
       instance.name.casecmp(name).zero?
     end
   end
-
 end

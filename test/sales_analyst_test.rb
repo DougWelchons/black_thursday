@@ -244,7 +244,7 @@ class SalesAnalystTest < Minitest::Test
     engine = SalesEngine.from_csv(@csv_data)
     analyst = SalesAnalyst.new(engine)
 
-    assert_equal 19, analyst.merchants_with_only_one_item_registered_in_month("January").count
+    assert_equal 19, analyst.merchants_with_only_one_item_registered_in_month('January').count
   end
 
   def test_max_items_sold
@@ -311,7 +311,7 @@ class SalesAnalystTest < Minitest::Test
 
   def test_customer_top_buyers
     engine = SalesEngine.from_csv(@csv_data)
-    # analyst = SalesAnalyst.new(engine)
+    analyst = SalesAnalyst.new(engine)
 
     expected = [
                 engine.customers.find_by_id(595),
@@ -323,11 +323,55 @@ class SalesAnalystTest < Minitest::Test
     assert_equal 20, analyst.top_buyers.count
   end
 
+  def test_find_all_item_quantity_for_invoice
+    engine = SalesEngine.from_csv(@csv_data)
+    analyst = SalesAnalyst.new(engine)
+
+    assert_equal 41, analyst.item_quantity_for_invoice(14)
+  end
+
+  def test_sum_of_item_quantity_for_invoice
+    engine = SalesEngine.from_csv(@csv_data)
+    analyst = SalesAnalyst.new(engine)
+
+    invoices = [engine.invoices.find_by_id(68)]
+
+    assert_equal 24, analyst.sum_of_item_quantity_for_invoice(invoices)
+  end
+
+  def test_group_invoices_by_merchant_id
+    engine = SalesEngine.from_csv(@csv_data)
+    analyst = SalesAnalyst.new(engine)
+
+    expected_array = analyst.group_invoices_by_merchant_id(7).map do |key, value|
+      value
+    end.first
+
+    assert_instance_of Merchant, engine.merchants.find_by_id(analyst.group_invoices_by_merchant_id(7).keys.first)
+    assert_instance_of Array, expected_array
+    assert_instance_of Invoice, expected_array.first
+    assert_instance_of Hash, analyst.group_invoices_by_merchant_id(7)
+  end
+
+  def test_item_count_by_merchants
+    engine = SalesEngine.from_csv(@csv_data)
+    analyst = SalesAnalyst.new(engine)
+    expected = {
+                12334861 => 37,
+                12334208 => 11,
+                12335417 => 41,
+                12336821 => 57
+                }
+
+    assert_equal expected, analyst.item_count_by_merchants(7)
+  end
+
   def test_top_merchant_for_customer
     engine = SalesEngine.from_csv(@csv_data)
     analyst = SalesAnalyst.new(engine)
 
+    expected = engine.merchants.find_by_id(12336617)
 
-    assert_equal 0, analyst.top_merchant_for_customer(13)
+    assert_equal expected, analyst.top_merchant_for_customer(2)
   end
 end
