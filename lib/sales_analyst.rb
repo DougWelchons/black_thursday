@@ -301,12 +301,13 @@ class SalesAnalyst
   def item_count_by_merchants(customer_id)
     item_count_by_merchant = group_invoices_by_merchant_id(customer_id)
     item_count_by_merchant.each do |merchant, invoices|
-      item_count_by_merchant[merchant] = sum_of_item_quantity_for_invoice(invoices)
+      item_count_by_merchant[merchant] =
+      sum_of_item_quantity_for_invoice(invoices)
     end
   end
 
   def top_merchant_for_customer(customer_id)
-    max_items = item_count_by_merchants(customer_id).max_by do |key, value|
+    max_items = item_count_by_merchants(customer_id).max_by do |_key, value|
       value
     end.first
     @engine.merchants.find_by_id(max_items)

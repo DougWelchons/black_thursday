@@ -316,7 +316,7 @@ class SalesAnalystTest < Minitest::Test
     expected = [
                 engine.customers.find_by_id(595),
                 engine.customers.find_by_id(370)
-                ]
+               ]
 
     assert_equal 2, analyst.top_buyers(2).count
     assert_equal expected, analyst.top_buyers(2)
@@ -343,7 +343,7 @@ class SalesAnalystTest < Minitest::Test
     engine = SalesEngine.from_csv(@csv_data)
     analyst = SalesAnalyst.new(engine)
 
-    expected_array = analyst.group_invoices_by_merchant_id(7).map do |key, value|
+    expected_array = analyst.group_invoices_by_merchant_id(7).map do |_key, value|
       value
     end.first
 
@@ -357,11 +357,11 @@ class SalesAnalystTest < Minitest::Test
     engine = SalesEngine.from_csv(@csv_data)
     analyst = SalesAnalyst.new(engine)
     expected = {
-                12334861 => 37,
-                12334208 => 11,
-                12335417 => 41,
-                12336821 => 57
-                }
+                  12334861 => 37,
+                  12334208 => 11,
+                  12335417 => 41,
+                  12336821 => 57
+               }
 
     assert_equal expected, analyst.item_count_by_merchants(7)
   end
