@@ -280,12 +280,29 @@ class SalesAnalyst
     sorted_customers[0..(x - 1)]
   end
 
+  def helper_1(invoice)
+    @engine.find_all_invoice_items_by_invoice_id(invoice.id).map do |invoice_item|
+      invoice_item.quantity
+    end.sum
+  end
+
+  def helper_2(invoices)
+    invoices.map do |invoice|
+      helper_1(invoice)
+    end.sum
+  end
+
   def top_merchant_for_customer(customer_id)
     hash = @engine.find_all_invoices_by_customer_id(customer_id).group_by do |invoice|
       invoice.merchant_id
     end
-
-
-
+    hash.each do |merchant, invoices|
+      hash[merchant] = helper_2(invoices)
+    end
+    hash
+    max_items = hash.max_by do |key, value|
+      value
+    end
+    @engine.merchants.find_by_id(max_items[0])
   end
 end

@@ -327,8 +327,7 @@ class SalesAnalystTest < Minitest::Test
     engine = SalesEngine.from_csv(@csv_data)
     analyst = SalesAnalyst.new(engine)
 
-    # require "pry"; binding.pry
 
-    assert_equal 0, analyst.top_merchant_for_customer(1)
+    assert_equal 0, analyst.top_merchant_for_customer(13)
   end
 end
