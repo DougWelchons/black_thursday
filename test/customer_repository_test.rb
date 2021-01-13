@@ -56,6 +56,19 @@ class CustomerRepositoryTest < Minitest::Test
     assert_equal 7, customer_repo.find_by_id(7).id
   end
 
+  def test_it_updated_attributes
+    customer_repo = CustomerRepository.new(@sample_data, 'engine')
+
+    updated_attributes = {
+                            :first_name => 'Primero',
+                            :last_name => 'Segundo'
+                         }
+
+    assert_equal updated_attributes, customer_repo.update_given_attributes(customer_repo.find_by_id(1), updated_attributes)
+    assert_equal 'Primero', customer_repo.find_by_id(1).first_name
+    assert_equal 'Segundo', customer_repo.find_by_id(1).last_name
+  end
+
   def test_it_can_update
     customer_repo = CustomerRepository.new(@sample_data, 'engine')
     original_names = customer_repo.find_by_id(1).updated_at

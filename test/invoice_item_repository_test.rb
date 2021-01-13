@@ -70,6 +70,18 @@ class InvoiceItemRepositoryTest < Minitest::Test
     assert_equal 10, invoice_item_repo.max_by_id
   end
 
+  def test_it_can_update_given_attributes
+    invoice_item_repo = InvoiceItemRepository.new(@sample_data, 'engine')
+
+    update = {
+                quantity:   12,
+                unit_price: 20
+             }
+
+    assert_equal update, invoice_item_repo.update_given_attributes(invoice_item_repo.find_by_id(2), update)
+    assert_equal 12, invoice_item_repo.find_by_id(2).quantity
+  end
+
   def test_update_with_id_and_attrs_arg
     invoice_item_repo = InvoiceItemRepository.new(@sample_data, 'engine')
     update = {
@@ -92,6 +104,6 @@ class InvoiceItemRepositoryTest < Minitest::Test
 
   def test_it_can_inspect
     test = InvoiceItemRepository.new(@sample_data, 'engine')
-    assert_equal "#<InvoiceItemRepository 10 rows>", test.inspect
+    assert_equal '#<InvoiceItemRepository 10 rows>', test.inspect
   end
 end

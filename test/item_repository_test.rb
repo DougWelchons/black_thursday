@@ -106,6 +106,19 @@ class ItemRepositoryTest < Minitest::Test
     assert_equal 5.99, test.find_by_id(5).unit_price
   end
 
+  def test_it_can_update_given_attributes
+    test = ItemRepository.new(@sample_data, 'engine')
+
+    update = {
+              name: 'Computer',
+              description: 'This is a computer.',
+              unit_price: 125
+              }
+
+    assert_equal update, test.update_given_attributes(test.find_by_id(1), update)
+    assert_equal 'Computer', test.find_by_id(1).name
+  end
+
   def test_it_can_update
     test = ItemRepository.new(@sample_data, 'engine')
     original_time = test.find_by_id(1).updated_at

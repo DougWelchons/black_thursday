@@ -26,7 +26,7 @@ class TransactionRepositoryTest < Minitest::Test
   def test_it_can_inspect
     test = TransactionRepository.new(@sample_data, 'engine')
 
-    assert_equal "#<TransactionRepository 10 rows>", test.inspect
+    assert_equal '#<TransactionRepository 10 rows>', test.inspect
   end
 
   def test_it_can_give_all
@@ -65,13 +65,13 @@ class TransactionRepositoryTest < Minitest::Test
   def test_it_can_create
     test = TransactionRepository.new(@sample_data, 'engine')
     attributes = {
-                  :id => 11,
-                  :invoice_id => 11,
-                  :credit_card_number     => '1000000000000011',
+                  :id                          => 11,
+                  :invoice_id                  => 11,
+                  :credit_card_number          => '1000000000000011',
                   :credit_card_expiration_date => '0011',
-                  :result => 'pending',
-                  :created_at  => Time.now,
-                  :updated_at  => Time.now,
+                  :result                      => 'pending',
+                  :created_at                  => Time.now,
+                  :updated_at                  => Time.now,
                   }
 
     test.create(attributes)
@@ -80,14 +80,26 @@ class TransactionRepositoryTest < Minitest::Test
     assert_equal 11, test.all.count
   end
 
+  def test_it_can_update_given_attributes
+    test = TransactionRepository.new(@sample_data, 'engine')
+    updated = {
+                 :credit_card_number          => '4000400040004001',
+                 :credit_card_expiration_date => '0404',
+                 :result                      => :shipped
+              }
+
+    assert_equal updated, test.update_given_attributes(test.find_by_id(1), updated)
+    assert_equal '0404', test.find_by_id(1).credit_card_expiration_date
+  end
+
   def test_it_can_update
     test = TransactionRepository.new(@sample_data, 'engine')
     original_time = test.find_by_id(1).updated_at
     attributes = {
-                  :credit_card_number => '4000400040004001',
-                  :credit_card_expiration_date => '0404',
-                  :result => :shipped
-                  }
+                    :credit_card_number          => '4000400040004001',
+                    :credit_card_expiration_date => '0404',
+                    :result                      => :shipped
+                }
 
     test.update(1, attributes)
 
