@@ -25,6 +25,7 @@ class SalesEngineTest < Minitest::Test
 
   def test_it_exists
     sales_engine = SalesEngine.from_csv(@csv_data)
+
     assert_instance_of SalesEngine, sales_engine
   end
 
