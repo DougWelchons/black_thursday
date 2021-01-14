@@ -10,5 +10,4 @@ module Averageable
     end.sum
     Math.sqrt(standard / (count - 1)).round(2)
   end
-
 end
