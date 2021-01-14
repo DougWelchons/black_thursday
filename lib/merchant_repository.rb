@@ -6,9 +6,9 @@ class MerchantRepository < Repository
   attr_reader :merchants
 
   def initialize(file_path, engine)
-    @engine = engine
+    @engine    = engine
     @merchants = create_repository(file_path)
-    @repo = @merchants
+    @repo      = @merchants
   end
 
   def create_repository(file_path)
@@ -26,11 +26,11 @@ class MerchantRepository < Repository
 
   def create(attributes)
     @merchants.push(Merchant.new({
-                                  id: max_by_id + 1,
-                                  name: attributes[:name],
-                                  created_at: Time.now, #lookinto sriptime
-                                  updated_at: Time.now
-                                  }))
+                                    id: max_by_id + 1,
+                                    name: attributes[:name],
+                                    created_at: Time.now,
+                                    updated_at: Time.now
+                                 }))
   end
 
   def update(id, attribute)

@@ -6,8 +6,8 @@ class ItemRepository < Repository
 
   def initialize(file_path, engine)
     @engine = engine
-    @items = create_repository(file_path)
-    @repo = @items
+    @items  = create_repository(file_path)
+    @repo   = @items
   end
 
   def create_repository(file_path)
@@ -47,9 +47,7 @@ class ItemRepository < Repository
                           }))
   end
 
-  def update(id, attributes)
-    item = find_by_id(id)
-    return nil if item.nil?
+  def update_given_attributes(item, attributes)
     attributes.each do |key, value|
       if value == attributes[:name]
         item.name = attributes[key]
@@ -59,6 +57,12 @@ class ItemRepository < Repository
         item.unit_price = attributes[key]
       end
     end
+  end
+
+  def update(id, attributes)
+    item = find_by_id(id)
+    return nil if item.nil?
+    update_given_attributes(item, attributes)
     item.updated_at = Time.now
   end
 end

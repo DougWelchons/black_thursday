@@ -3,6 +3,7 @@ require_relative 'averageable'
 class SalesAnalyst
   include Math
   include Averageable
+
   def initialize(engine)
     @engine = engine
   end

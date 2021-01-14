@@ -5,9 +5,9 @@ class TransactionRepository < Repository
   attr_reader :transactions
 
   def initialize(file_path, engine)
-    @engine = engine
+    @engine       = engine
     @transactions = create_repository(file_path)
-    @repo = @transactions
+    @repo         = @transactions
   end
 
   def create_repository(file_path)
@@ -41,9 +41,7 @@ class TransactionRepository < Repository
                           }))
   end
 
-  def update(id, attributes)
-    transaction = find_by_id(id)
-    return nil if transaction.nil?
+  def update_given_attributes(transaction, attributes)
     attributes.each do |key, value|
       if value == attributes[:credit_card_number]
         transaction.credit_card_number = attributes[key]
@@ -53,6 +51,12 @@ class TransactionRepository < Repository
         transaction.result = attributes[key]
       end
     end
+  end
+
+  def update(id, attributes)
+    transaction = find_by_id(id)
+    return nil if transaction.nil?
+    update_given_attributes(transaction, attributes)
     transaction.updated_at = Time.now
   end
 end

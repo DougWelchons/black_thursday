@@ -1,5 +1,6 @@
 require 'bigdecimal'
 require 'time'
+
 class Item
   attr_reader   :id,
                 :merchant_id,
