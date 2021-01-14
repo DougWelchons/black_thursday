@@ -1,5 +1,8 @@
+require_relative 'averageable'
+
 class SalesAnalyst
   include Math
+  include Averageable
   def initialize(engine)
     @engine = engine
   end
@@ -11,7 +14,7 @@ class SalesAnalyst
   end
 
   def average_items_per_merchant
-    (items_per_merchant.sum / @engine.all_merchants.count.to_f).round(2)
+    average(items_per_merchant)
   end
 
   def merchants_with_high_item_count
@@ -27,14 +30,7 @@ class SalesAnalyst
     prices = @engine.find_all_items_by_merchant_id(id).map do |item|
       item.unit_price
     end
-    (prices.sum / prices.count).round(2)
-  end
-
-  def standard_deviation(average, count, array)
-    standard = array.map do |number|
-      (number - average) ** 2
-    end.sum
-    Math.sqrt(standard / (count - 1)).round(2)
+    average(prices)
   end
 
   def average_items_per_merchant_standard_deviation
@@ -48,7 +44,7 @@ class SalesAnalyst
     avg = @engine.all_merchants.map do |merchant|
       average_item_price_for_merchant(merchant.id)
     end
-    (avg.sum / avg.count).round(2)
+    average(avg)
   end
 
   def prices
@@ -58,7 +54,7 @@ class SalesAnalyst
   end
 
   def average_price
-    (prices.sum / prices.count).round(2)
+    average(prices)
   end
 
   def average_price_standard_deviation
@@ -83,7 +79,7 @@ class SalesAnalyst
   end
 
   def average_invoices_per_merchant
-    (invoices_per_merchant.sum / @engine.all_merchants.count.to_f).round(2)
+    average(invoices_per_merchant)
   end
 
   def average_invoices_per_merchant_standard_deviation
@@ -119,7 +115,7 @@ class SalesAnalyst
     count = invoices_per_day.map do |key, value|
       value.count
     end
-    count.sum / 7
+    average(count)
   end
 
   def average_invoices_per_day_standard_deviation
